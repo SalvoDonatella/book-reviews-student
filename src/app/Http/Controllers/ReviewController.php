@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
+use App\Models\Film;
 use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
     /**
-     * List the logged-in user's own reviews, across every book, most
+     * List the logged-in user's own reviews, across every film, most
      * recent first.
      */
     public function mine()
     {
         $reviews = auth()->user()->reviews()
-            ->with('book')
+            ->with('film')
             ->latest()
             ->paginate(12);
 
@@ -23,35 +23,35 @@ class ReviewController extends Controller
     }
 
     /**
-     * Show the form for leaving a review on the given book.
+     * Show the form for leaving a review on the given film.
      */
-    public function create(Book $book)
+    public function create(Film $film)
     {
-        return view('reviews.create', compact('book'));
+        return view('reviews.create', compact('film'));
     }
 
     /**
-     * Store a newly created review for the given book.
+     * Store a newly created review for the given film.
      */
-    public function store(Request $request, Book $book)
+    public function store(Request $request, Film $film)
     {
         $validated = $request->validate($this->validationRules());
 
-        // The migration's unique index on [book_id, user_id] already stops
+        // The migration's unique index on [film_id, user_id] already stops
         // a second row for this exact pair existing - this check exists so
         // trying anyway gets the same friendly redirect-back-with-errors
         // treatment as any other validation failure, rather than a raw
         // "Duplicate entry" database exception reaching the browser.
-        if ($book->reviews()->where('user_id', auth()->id())->exists()) {
+        if ($film->reviews()->where('user_id', auth()->id())->exists()) {
             return back()->withErrors([
-                'rating' => 'You have already reviewed this book.',
+                'rating' => 'You have already reviewed this film.',
             ])->withInput();
         }
 
         $validated['user_id'] = auth()->id();
-        $book->reviews()->create($validated);
+        $film->reviews()->create($validated);
 
-        return redirect()->route('books.show', $book);
+        return redirect()->route('films.show', $film);
     }
 
     /**
@@ -73,7 +73,7 @@ class ReviewController extends Controller
 
         $review->update($request->validate($this->validationRules()));
 
-        return redirect()->route('books.show', $review->book);
+        return redirect()->route('films.show', $review->film);
     }
 
     /**
@@ -83,13 +83,13 @@ class ReviewController extends Controller
     {
         $this->authorizeOwner($review);
 
-        // $review->book has to be read before delete() - afterwards the
+        // $review->film has to be read before delete() - afterwards the
         // row (and the foreign key that made this relationship work) is
         // gone, and there'd be nothing left to redirect back to.
-        $book = $review->book;
+        $film = $review->film;
         $review->delete();
 
-        return redirect()->route('books.show', $book);
+        return redirect()->route('films.show', $film);
     }
 
     /**

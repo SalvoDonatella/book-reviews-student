@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('review', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('book_id')->constrained()->onDelete('cascade');
+            $table->foreignId('films_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->unsignedTinyInteger('rating');
-            $table->text('comment')->nullable();
+            $table->unsignedTinyInteger('score');
+            $table->float('comment')->nullable();
             $table->timestamps();
-
-            // At most one review per user per book - enforced here, not
-            // just in application code.
-            $table->unique(['book_id', 'user_id']);
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('review');
     }
 };

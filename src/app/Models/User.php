@@ -49,9 +49,9 @@ class User extends Authenticatable
     }
 
     /**
-     * The reviews this user has written.
+     * The review this user has written.
      */
-    public function reviews(): HasMany
+    public function review(): HasMany
     {
         return $this->hasMany(Review::class);
     }

@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Author;
+use App\Models\Film;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Author>
+ * @extends Factory<Film>
  */
-class AuthorFactory extends Factory
+class FilmFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,9 +18,9 @@ class AuthorFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'image' => null,
-            'bio' => fake()->paragraph(),
+            'title' => rtrim(fake()->sentence(random_int(2, 5)), '.'),
+            'release_year' => fake()->numberBetween(1950, (int) date('Y')),
+            'genre' => fake()->word()
         ];
     }
 }
