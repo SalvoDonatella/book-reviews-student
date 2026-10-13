@@ -24,6 +24,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 WORKDIR /var/www/html
 
+RUN useradd --create-home --uid 1000 --shell /bin/bash student
+USER student
+
 # Keeps the container running (no server process of its own) so
 # `docker compose exec workspace-container bash` has something to attach to.
 CMD ["tail", "-f", "/dev/null"]

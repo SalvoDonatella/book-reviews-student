@@ -5,6 +5,8 @@ FROM php:8.4-apache
 
 RUN a2enmod rewrite
 
+RUN usermod --uid 1000 www-data && groupmod --gid 1000 www-data
+
 RUN apt-get update && apt-get install -y \
         libzip-dev libpng-dev libjpeg-dev libfreetype6-dev libicu-dev libonig-dev \
         unzip git curl \
